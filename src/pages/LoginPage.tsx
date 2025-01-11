@@ -52,7 +52,7 @@ const LoginPage: React.FC = () => {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Digite seu nome de usuário"
             />
-            <Button onClick={handleLogin}>Entrar</Button>
+            <Button onClick={handleLogin} >Entrar </Button>
           </InputContainer>
         )}
 
@@ -62,6 +62,8 @@ const LoginPage: React.FC = () => {
             marginTop: "1rem",
             backgroundColor: "#444",
             color: "#fff",
+            maxWidth: "75%",
+            alignSelf: "center",
           }}
         >
           {isRegisterMode ? "Voltar ao Login" : "Cadastrar"}
