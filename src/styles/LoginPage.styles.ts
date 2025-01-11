@@ -71,6 +71,15 @@ export const Input = styled.input`
   }
 `;
 
+export const TimerDisplay = styled.div`
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fe8a00;
+  margin: 1rem 0;
+  text-align: center;
+`;
+
+
 export const Button = styled.button`
   margin-top: 1.5rem;
   width: 100%;
@@ -88,4 +97,6 @@ export const Button = styled.button`
   &:hover {
     opacity: 0.9;
   }
+
+  
 `;

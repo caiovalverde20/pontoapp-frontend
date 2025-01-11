@@ -7,7 +7,7 @@ import {
   Label,
   Title,
   Highlight,
-} from "../pages/LoginPage.styles";
+} from "../styles/LoginPage.styles";
 
 interface AddUserProps {
   onUserAdded: (user: any) => void;

@@ -9,7 +9,10 @@ import {
   Button,
   InputContainer,
   Label,
-} from "./LoginPage.styles";
+  TimerDisplay,
+} from "../styles/LoginPage.styles";
+import WeekDayItem from "../components/WeekDayItem";
+import { calculateHours, calculateHoursInDecimal, formatTime } from "../utils/timeUtils";
 
 interface WeekEntry {
   day: string;
@@ -80,14 +83,6 @@ const ClockInPage: React.FC = () => {
 
         setWeekData(week);
 
-        const todayData = week.find((entry: { isToday: any }) => entry.isToday);
-        if (!todayData?.isToday || todayData?.hours === "Sem registro") {
-          setTimeToday("0h 00m");
-        }
-        if (todayData?.hours && todayData.hours !== "Trabalhando") {
-          setTimeToday(todayData.hours);
-        }
-
         if (data.totalHoursWeek) {
           setTotalHoursWeek(`${Math.floor(data.totalHoursWeek)}h ${Math.round(
             (data.totalHoursWeek % 1) * 60
@@ -113,25 +108,6 @@ const ClockInPage: React.FC = () => {
     return () => clearInterval(timer);
   }, [isClockedIn, elapsedTime]);
 
-  const calculateHours = (start: string, end: string): string => {
-    const diff = new Date(end).getTime() - new Date(start).getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours}h ${minutes}m`;
-  };
-
-  const calculateHoursInDecimal = (start: string, end: string): number => {
-    const diff = new Date(end).getTime() - new Date(start).getTime();
-    return diff / (1000 * 60 * 60);
-  };
-
-  const formatTime = (totalSeconds: number): string => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    return `${hours}h ${minutes}m ${seconds}s`;
-  };
-
   const handleClockInOut = async () => {
     try {
       if (isClockedIn) {
@@ -146,18 +122,6 @@ const ClockInPage: React.FC = () => {
         setIsClockedIn(true);
         setIsClockedOut(false);
       }
-
-      const response = await api.get(`/ponto/user/${username}/week`);
-      setWeekData(
-        response.data.weekData.map((dayData: any): WeekEntry => ({
-          day: dayData.day,
-          hours: dayData.endTime
-            ? calculateHours(dayData.startTime, dayData.endTime)
-            : "Sem registro",
-          isToday: false,
-          meetsTarget: false,
-        }))
-      );
     } catch (error) {
       console.error("Erro ao registrar ponto:", error);
       alert("Erro ao registrar ponto. Tente novamente.");
@@ -166,30 +130,26 @@ const ClockInPage: React.FC = () => {
 
   return (
     <Container>
-      <Content style={{ paddingTop: "2rem" }}>
+      <Content>
         <Title>
           Relógio de <Highlight>Ponto</Highlight>
         </Title>
-        <div style={{ marginBottom: "1rem", textAlign: "center" }}>
-          <h1
-            style={{
-              fontSize: "3.5rem",
-              color: isClockedIn ? "#fe8a00" : "#CFCFCF",
-              margin: "0.5rem 0",
-              fontWeight: "bold",
-            }}
-          >
-            {timeToday}
-          </h1>
-          <p style={{ color: "#CFCFCF", fontSize: "1.3rem" }}>Horas de hoje</p>
-        </div>
+        <TimerDisplay>
+          {timeToday}
+        </TimerDisplay>
         <InputContainer>
+          <p style={{ color: "#CFCFCF", marginBottom: "1rem" }}>Horas de hoje</p>
           <Button
             onClick={handleClockInOut}
             disabled={isClockedOut}
             style={{
-              cursor: isClockedOut ? "not-allowed" : "pointer",
+              backgroundColor: isClockedOut
+                ? "#a9a9a9"
+                : isClockedIn
+                ? "#e63946"
+                : "#fe8a00",
               transform: isClockedIn && !isClockedOut ? "scale(1.05)" : "scale(1)",
+              cursor: isClockedOut ? "not-allowed" : "pointer",
               transition: "all 0.2s ease",
             }}
           >
@@ -202,28 +162,8 @@ const ClockInPage: React.FC = () => {
         </InputContainer>
         <h2 style={{ marginTop: "2rem", color: "#F5F5F5" }}>Semana Atual</h2>
         <div style={{ width: "100%", maxWidth: "400px" }}>
-          {weekData.map((entry: WeekEntry, index) => (
-            <div
-              key={index}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                backgroundColor: entry.meetsTarget
-                  ? "rgba(0, 128, 0, 0.5)"
-                  : entry.isToday
-                  ? "rgba(244, 197, 66, 0.5)"
-                  : "rgba(217, 217, 217, 0.05)",
-                borderRadius: "4px",
-                padding: "0.5rem 1rem",
-                marginBottom: "0.5rem",
-              }}
-            >
-              <span style={{ color: "#CFCFCF" }}>{entry.day}</span>
-              <span style={{ color: "#F5F5F5", fontWeight: 700 }}>
-                {entry.hours}
-              </span>
-            </div>
+          {weekData.map((entry, index) => (
+            <WeekDayItem key={index} entry={entry} />
           ))}
         </div>
         <h3 style={{ marginTop: "1rem", color: "#F5F5F5" }}>
