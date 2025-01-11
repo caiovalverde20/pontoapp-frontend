@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import AddUser from "../components/AddUser";
 import {
@@ -12,16 +13,25 @@ import {
   Highlight,
 } from "./LoginPage.styles";
 
-const LoginPage: React.FC = () => {
+const LoginPage: React.FC = () => { 
   const [username, setUsername] = useState<string>("");
   const [isRegisterMode, setIsRegisterMode] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const response = await api.post("/login", { username });
-      console.log("Login successful:", response.data);
+      const response = await api.get(`/users/username/${username}`);
+      if (response.data) {
+        console.log("Login successful:", response.data);
+        setHasError(false);
+        navigate("/clockin"); 
+      } else {
+        setHasError(true);
+      }
     } catch (error) {
       console.error("Erro ao realizar login:", error);
+      setHasError(true);
     }
   };
 
@@ -49,10 +59,22 @@ const LoginPage: React.FC = () => {
             <Input
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setHasError(false);
+              }}
               placeholder="Digite seu nome de usuário"
+              style={{
+                borderColor: hasError ? "red" : "transparent", 
+                borderWidth: hasError ? "2px" : "1px",
+              }}
             />
-            <Button onClick={handleLogin} >Entrar </Button>
+            {hasError && (
+              <span style={{ color: "red", fontSize: "0.9rem", marginTop: "0.5rem" }}>
+                Usuário não encontrado. Tente novamente.
+              </span>
+            )}
+            <Button onClick={handleLogin}>Entrar</Button>
           </InputContainer>
         )}
 
