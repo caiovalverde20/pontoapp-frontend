@@ -3,11 +3,14 @@ import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh; 
-  width: 100vw; 
+  align-items: flex-start; 
+  min-height: 100vh; 
+  width: 100%;
   background-color: #151f2b;
+  overflow-y: auto;
+  padding: 1rem;
 `;
+
 
 export const Content = styled.div`
   width: 100%;

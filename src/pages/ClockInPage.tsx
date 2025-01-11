@@ -132,8 +132,23 @@ const ClockInPage: React.FC = () => {
     <Container>
       <Content>
         <Title>
-          Relógio de <Highlight>Ponto</Highlight>
+            Relógio de <Highlight>Ponto</Highlight>
         </Title>
+        <p style={{ fontSize: "1.2rem", color: "#CFCFCF", marginTop: "0.5rem" }}>
+            Bem-vindo,{" "}
+            <Highlight>
+                {username
+                    .split(".")
+                    .map((part: string, index: number) =>
+                        index === 1 
+                            ? part.slice(0, -2).charAt(0).toUpperCase() + part.slice(1, -2)
+                            : part.charAt(0).toUpperCase() + part.slice(1)
+                    )
+                    .join(" ")}
+                </Highlight>
+            </p>
+
+
         <TimerDisplay>
           {timeToday}
         </TimerDisplay>
