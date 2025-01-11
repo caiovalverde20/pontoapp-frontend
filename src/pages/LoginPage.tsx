@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
       if (response.data) {
         console.log("Login successful:", response.data);
         setHasError(false);
-        navigate("/clockin"); 
+        navigate("/clockin", { state: { username: response.data.username } });
       } else {
         setHasError(true);
       }
