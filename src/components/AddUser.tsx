@@ -1,15 +1,25 @@
 import React, { useState } from "react";
 import api from "../services/api";
+import {
+  Input,
+  Button,
+  InputContainer,
+  Label,
+  Title,
+  Highlight,
+} from "../pages/LoginPage.styles";
 
 interface AddUserProps {
   onUserAdded: (user: any) => void;
+  onBackToLogin: () => void;
 }
 
 const AddUser: React.FC<AddUserProps> = ({ onUserAdded }) => {
   const [newUserName, setNewUserName] = useState<string>("");
 
   const handleAddUser = () => {
-    api.post("/users", { fullName: newUserName })
+    api
+      .post("/users", { fullName: newUserName })
       .then((response) => {
         onUserAdded(response.data);
         setNewUserName("");
@@ -20,18 +30,23 @@ const AddUser: React.FC<AddUserProps> = ({ onUserAdded }) => {
   };
 
   return (
-    <div>
-      <h2>Adicionar Novo Usuário</h2>
-      <input
-        type="text"
-        value={newUserName}
-        onChange={(e) => setNewUserName(e.target.value)}
-        placeholder="Nome completo"
-      />
-      <button onClick={handleAddUser} disabled={!newUserName.trim()}>
-        Adicionar
-      </button>
-    </div>
+    <>
+      <Title>
+        Cadastro de <Highlight>Usuário</Highlight>
+      </Title>
+      <InputContainer>
+        <Label>Nome Completo</Label>
+        <Input
+          type="text"
+          value={newUserName}
+          onChange={(e) => setNewUserName(e.target.value)}
+          placeholder="Digite o nome completo"
+        />
+        <Button onClick={handleAddUser} disabled={!newUserName.trim()}>
+          Cadastrar
+        </Button>
+      </InputContainer>
+    </>
   );
 };
 
