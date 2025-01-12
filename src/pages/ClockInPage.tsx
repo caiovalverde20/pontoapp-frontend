@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import {
@@ -37,70 +37,71 @@ const ClockInPage: React.FC = () => {
   const [isClockedIn, setIsClockedIn] = useState<boolean>(false);
   const [isClockedOut, setIsClockedOut] = useState<boolean>(false);
 
+  const fetchWeekData = useCallback(async () => {
+    if (!username) return;
+
+    try {
+      const response = await api.get(`/ponto/user/${username}/week`);
+      const data = response.data;
+
+      const today = new Date().toDateString();
+      const week = data.weekData.map((dayData: any): WeekEntry => {
+        const isToday =
+          dayData.startTime &&
+          new Date(dayData.startTime).toDateString() === today;
+        const hours = dayData.endTime
+          ? calculateHours(dayData.startTime, dayData.endTime)
+          : isToday && dayData.startTime && !dayData.endTime
+            ? 'Trabalhando'
+            : 'Sem registro';
+
+        if (isToday) {
+          if (!dayData.endTime) {
+            const startTime = new Date(dayData.startTime).getTime();
+            const now = Date.now();
+            setElapsedTime(Math.floor((now - startTime) / 1000));
+            setIsClockedIn(true);
+            setIsClockedOut(false);
+          } else {
+            setIsClockedOut(true);
+            setIsClockedIn(false);
+            setTimeToday(calculateHours(dayData.startTime, dayData.endTime));
+          }
+        }
+
+        return {
+          day: dayData.day,
+          hours,
+          isToday,
+          meetsTarget:
+            dayData.endTime &&
+            calculateHoursInDecimal(dayData.startTime, dayData.endTime) >= 7.5,
+        };
+      });
+
+      setWeekData(week);
+
+      if (data.totalHoursWeek) {
+        setTotalHoursWeek(
+          `${Math.floor(data.totalHoursWeek)}h ${Math.round(
+            (data.totalHoursWeek % 1) * 60
+          )}m`
+        );
+      }
+    } catch (error) {
+      console.error('Erro ao buscar dados da semana:', error);
+      alert('Erro ao carregar os dados da semana. Tente novamente.');
+    }
+  }, [username]);
+
   useEffect(() => {
     if (!username) {
       navigate('/');
       return;
     }
 
-    const fetchWeekData = async () => {
-      try {
-        const response = await api.get(`/ponto/user/${username}/week`);
-        const data = response.data;
-
-        const today = new Date().toDateString();
-        const week = data.weekData.map((dayData: any): WeekEntry => {
-          const isToday =
-            dayData.startTime &&
-            new Date(dayData.startTime).toDateString() === today;
-          const hours = dayData.endTime
-            ? calculateHours(dayData.startTime, dayData.endTime)
-            : isToday && dayData.startTime && !dayData.endTime
-              ? 'Trabalhando'
-              : 'Sem registro';
-
-          if (isToday) {
-            if (!dayData.endTime) {
-              const startTime = new Date(dayData.startTime).getTime();
-              const now = Date.now();
-              setElapsedTime(Math.floor((now - startTime) / 1000));
-              setIsClockedIn(true);
-              setIsClockedOut(false);
-            } else {
-              setIsClockedOut(true);
-              setIsClockedIn(false);
-              setTimeToday(calculateHours(dayData.startTime, dayData.endTime));
-            }
-          }
-
-          return {
-            day: dayData.day,
-            hours,
-            isToday,
-            meetsTarget:
-              dayData.endTime &&
-              calculateHoursInDecimal(dayData.startTime, dayData.endTime) >=
-                7.5,
-          };
-        });
-
-        setWeekData(week);
-
-        if (data.totalHoursWeek) {
-          setTotalHoursWeek(
-            `${Math.floor(data.totalHoursWeek)}h ${Math.round(
-              (data.totalHoursWeek % 1) * 60
-            )}m`
-          );
-        }
-      } catch (error) {
-        console.error('Erro ao buscar dados da semana:', error);
-        alert('Erro ao carregar os dados da semana. Tente novamente.');
-      }
-    };
-
     fetchWeekData();
-  }, [username, navigate]);
+  }, [username, navigate, fetchWeekData]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -127,6 +128,8 @@ const ClockInPage: React.FC = () => {
         setIsClockedIn(true);
         setIsClockedOut(false);
       }
+
+      await fetchWeekData();
     } catch (error) {
       console.error('Erro ao registrar ponto:', error);
       alert('Erro ao registrar ponto. Tente novamente.');
