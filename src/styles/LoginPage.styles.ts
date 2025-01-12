@@ -1,23 +1,22 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: flex-start; 
-  min-height: 100vh; 
+  align-items: flex-start;
+  min-height: 100vh;
   width: 100%;
   background-color: #151f2b;
   overflow-y: auto;
   padding: 1rem;
 `;
 
-
 export const Content = styled.div`
   width: 100%;
   max-width: 600px;
   background-color: #151f2b;
-  border-radius: 8px; 
-  padding: 2rem; 
+  border-radius: 8px;
+  padding: 2rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -25,7 +24,7 @@ export const Content = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 3rem;
   font-weight: 400;
   color: #cfcfcf;
@@ -48,7 +47,7 @@ export const InputContainer = styled.div`
 `;
 
 export const Label = styled.label`
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   font-weight: 300;
   color: #ffffff;
@@ -82,7 +81,6 @@ export const TimerDisplay = styled.div`
   text-align: center;
 `;
 
-
 export const Button = styled.button`
   margin-top: 1.5rem;
   width: 100%;
@@ -90,7 +88,7 @@ export const Button = styled.button`
   border: none;
   border-radius: 4px;
   background: linear-gradient(124.18deg, #fe8a00 22.06%, #fe8a00 81.62%);
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   color: #1e2733;
@@ -100,6 +98,4 @@ export const Button = styled.button`
   &:hover {
     opacity: 0.9;
   }
-
-  
 `;

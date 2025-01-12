@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import api from "../services/api";
+import React, { useState } from 'react';
+import api from '../services/api';
 import {
   Input,
   Button,
@@ -7,7 +7,7 @@ import {
   Label,
   Title,
   Highlight,
-} from "../styles/LoginPage.styles";
+} from '../styles/LoginPage.styles';
 
 interface AddUserProps {
   onUserAdded: (user: any) => void;
@@ -15,17 +15,17 @@ interface AddUserProps {
 }
 
 const AddUser: React.FC<AddUserProps> = ({ onUserAdded }) => {
-  const [newUserName, setNewUserName] = useState<string>("");
+  const [newUserName, setNewUserName] = useState<string>('');
 
   const handleAddUser = () => {
     api
-      .post("/users", { fullName: newUserName })
+      .post('/users', { fullName: newUserName })
       .then((response) => {
         onUserAdded(response.data);
-        setNewUserName("");
+        setNewUserName('');
       })
       .catch((error) => {
-        console.error("Erro ao adicionar usuário:", error);
+        console.error('Erro ao adicionar usuário:', error);
       });
   };
 

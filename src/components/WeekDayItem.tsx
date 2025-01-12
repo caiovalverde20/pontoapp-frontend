@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface WeekEntry {
   day: string;
@@ -10,21 +10,21 @@ interface WeekEntry {
 const WeekDayItem: React.FC<{ entry: WeekEntry }> = ({ entry }) => (
   <div
     style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       backgroundColor: entry.meetsTarget
-        ? "rgba(0, 128, 0, 0.5)"
+        ? 'rgba(0, 128, 0, 0.5)'
         : entry.isToday
-        ? "rgba(244, 197, 66, 0.5)"
-        : "rgba(217, 217, 217, 0.05)",
-      borderRadius: "4px",
-      padding: "0.5rem 1rem",
-      marginBottom: "0.5rem",
+          ? 'rgba(244, 197, 66, 0.5)'
+          : 'rgba(217, 217, 217, 0.05)',
+      borderRadius: '4px',
+      padding: '0.5rem 1rem',
+      marginBottom: '0.5rem',
     }}
   >
-    <span style={{ color: "#CFCFCF" }}>{entry.day}</span>
-    <span style={{ color: "#F5F5F5", fontWeight: 700 }}>{entry.hours}</span>
+    <span style={{ color: '#CFCFCF' }}>{entry.day}</span>
+    <span style={{ color: '#F5F5F5', fontWeight: 700 }}>{entry.hours}</span>
   </div>
 );
 
