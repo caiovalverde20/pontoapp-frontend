@@ -8,7 +8,6 @@ import {
   Highlight,
   Button,
   InputContainer,
-  Label,
   TimerDisplay,
 } from '../styles/LoginPage.styles';
 import WeekDayItem from '../components/WeekDayItem';
